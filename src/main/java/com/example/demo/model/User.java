@@ -15,6 +15,8 @@ public class User {
     private String username;
     @Column(name = "email", nullable = false, unique = true, length = 70)
     private String email;
+    @Column(name = "phone_number", nullable = false, unique = true, length = 70)
+    private int phoneNumber;
     @JsonIgnore
     @Column(name = "password", nullable = false)
     private String password;
@@ -35,6 +37,7 @@ public class User {
         private int age;
         private Gender gender;
         private int isActive;
+        private int phoneNumber;
 
         public Builder(String username){
             this.username = username;
@@ -43,6 +46,10 @@ public class User {
 
         public Builder withEmail(String email){
             this.email = email;
+            return this;
+        }
+        public Builder withPhoneNumber(int phoneNumber){
+            this.phoneNumber = phoneNumber;
             return this;
         }
 
@@ -74,6 +81,7 @@ public class User {
             user1.age = this.age;
             user1.gender = this.gender;
             user1.isActive = this.isActive;
+            user1.phoneNumber = this.phoneNumber;
             return user1;
         }
 
@@ -128,6 +136,14 @@ public class User {
 
     public Gender getGender() {
         return gender;
+    }
+
+    public int getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(int phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public void setGender(Gender gender) {
