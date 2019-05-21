@@ -8,4 +8,5 @@ public interface CourierService {
     Courier createCourier(Courier courier);
     List<Courier> getCouriers(String status);
     void deleteCourier(Long id);
+    Courier getCourierById(Long id);
 }

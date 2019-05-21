@@ -26,6 +26,7 @@ public class CourierServiceImpl implements CourierService {
         //    BANNED;
         else
             return courierRepository.findAll().stream().filter(x->{
+
               if (status.equals("ACTIVE") || status.equals("active")){
                   return x.getStatus()== CourierStatus.ACTIVE;
               }
@@ -42,5 +43,10 @@ public class CourierServiceImpl implements CourierService {
     @Override
     public void deleteCourier(Long id) {
         courierRepository.deleteById(id);
+    }
+
+    @Override
+    public Courier getCourierById(Long id) {
+        return courierRepository.findById(id).get();
     }
 }
