@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.Response;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +15,20 @@ public class UserController {
     UserService userService;
 
     @GetMapping(path = "/getAll")
-    public List<User> getAll(){
-        return userService.getAllUsers();
+    public Response getAll(){
+        return new Response(true, "All users that were created!",userService.getAllUsers());
     }
     @GetMapping(path = "/getById/{id}")
-    public User getById(@PathVariable Long id){
-        return userService.getUserById(id);
+    public Response getById(@PathVariable Long id){
+        return new Response(true,"User with id = " + id ,userService.getUserById(id));
     }
     @PostMapping(path = "/create")
-    public User create(User user){
-        return userService.createUser(user);
+    public Response create(User user){
+        return new Response(true,"User created successfully!",userService.createUser(user));
     }
     @DeleteMapping(path = "/delete/{id}")
-    public void delete(@PathVariable Long id){
+    public Response delete(@PathVariable Long id){
         userService.deleteUser(id);
+        return new Response(true,"User with id = " + id + " has been deleted",null);
     }
 }
