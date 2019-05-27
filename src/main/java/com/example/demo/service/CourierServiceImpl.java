@@ -4,10 +4,11 @@ import com.example.demo.enums.CourierStatus;
 import com.example.demo.model.Courier;
 import com.example.demo.repository.CourierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Service
 public class CourierServiceImpl implements CourierService {
     @Autowired
     CourierRepository courierRepository;

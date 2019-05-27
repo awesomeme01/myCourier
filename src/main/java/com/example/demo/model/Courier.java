@@ -15,6 +15,7 @@ public class Courier {
     private User user;
     private CourierStatus status;
     private int rating;
+    private int pin;
 
     public Courier() {
     }
@@ -50,4 +51,6 @@ public class Courier {
     public void setRating(int rating) {
         this.rating = rating;
     }
+
+
 }
