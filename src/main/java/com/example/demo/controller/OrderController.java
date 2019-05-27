@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.Courier;
 import com.example.demo.model.CustomUser;
 import com.example.demo.model.OrderModel;
 import com.example.demo.model.Response;
@@ -25,6 +26,10 @@ public class OrderController {
     public Response createOrder(@AuthenticationPrincipal CustomUser customUser, @RequestBody OrderModel orderModel){
         System.out.println(customUser);
         return new Response(true, "Order created successfully", orderService.createOrder(orderModel));
+    }
+    @PutMapping(path = "/takeOrder/{id}")
+    public Response takeOrder(@PathVariable Long id, Courier courier){
+        return new Response(true, "", orderService.takeOrder(id, courier));
     }
     @DeleteMapping(path = "/delete/{id}")
     public Response deleteOrder(@PathVariable Long id){

@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 import com.example.demo.enums.Status;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,13 +15,16 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     @JoinColumn(name = "orderedBy")
     private User orderedBy;
     @ManyToOne
-    @JoinColumn(name = "courier")
-    private User courier;
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @JoinColumn(name = "courier_id")
+    private Courier courier;
     private LocalDateTime timeCreated;
     private Status status;
+    private Boolean isSuccessful;
     private Double moneyAmount;
     private String market;
 
@@ -59,12 +64,20 @@ public class Order {
         this.orderedBy = orderedBy;
     }
 
-    public User getCourier() {
+    public Courier getCourier() {
         return courier;
     }
 
-    public void setCourier(User courier) {
+    public void setCourier(Courier courier) {
         this.courier = courier;
+    }
+
+    public Boolean getSuccessful() {
+        return isSuccessful;
+    }
+
+    public void setSuccessful(Boolean successful) {
+        isSuccessful = successful;
     }
 
     public LocalDateTime getTimeCreated() {

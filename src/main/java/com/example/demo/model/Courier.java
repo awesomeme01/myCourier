@@ -15,9 +15,26 @@ public class Courier {
     private User user;
     private CourierStatus status;
     private int rating;
+    private int feedbackCount;
     private int pin;
 
     public Courier() {
+    }
+
+    public int getPin() {
+        return pin;
+    }
+
+    public void setPin(int pin) {
+        this.pin = pin;
+    }
+
+    public int getFeedbackCount() {
+        return feedbackCount;
+    }
+
+    public void setFeedbackCount(int feedbackCount) {
+        this.feedbackCount = feedbackCount;
     }
 
     public Long getId() {

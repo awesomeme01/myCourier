@@ -29,7 +29,7 @@ public class UserRolesController {
     public Response getAllUserRoles(){
         return new Response (true,"All userRoles that were created!",userRolesService.getAllUserRoles());
     }
-    @GetMapping(path = "/getAllbyUserId/{id}")
+    @GetMapping(path = "/getAllByUserId/{id}")
     public Response getUserRolesByUser(@PathVariable Long id){
         User user;
         try{

@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.enums.Status;
+import com.example.demo.model.Courier;
 import com.example.demo.model.Item;
 import com.example.demo.model.Order;
 import com.example.demo.model.OrderModel;
@@ -18,12 +20,28 @@ public class OrderServiceImpl implements OrderService{
     @Autowired
     ItemRepository itemRepository;
     @Override
-    public Order createOrder(OrderModel order) {
+    public OrderModel createOrder(OrderModel order) {
         for(Item item:order.getItemList()) {
             item.setOrder(order.getOrder());
             itemRepository.save(item);
         }
-        return orderRepository.save(order.getOrder());
+        order.getOrder().setStatus(Status.OPEN);
+        orderRepository.save(order.getOrder());
+        return order;
+    }
+
+    @Override
+    public OrderModel takeOrder(Long orderId, Courier courier) {
+//        Order current = orderRepository.findById(orderId).get();
+        OrderModel current = getOrderById(orderId);
+        if(current.getOrder().getCourier()==null){
+            current.getOrder().setCourier(courier);
+            current.getOrder().setStatus(Status.TAKEN);
+            orderRepository.save(current.getOrder());
+            return current;
+        }
+        else
+            return null;
     }
 
     @Override

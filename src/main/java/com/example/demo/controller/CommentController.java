@@ -1,0 +1,46 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.Comment;
+import com.example.demo.model.Response;
+import com.example.demo.repository.CommentRepository;
+import com.example.demo.service.CommentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping(path = "/comment")
+public class CommentController {
+    //    List<Comment> getAllComments();
+    //    List<Comment> getAllCommentsByOrderId(Long id);
+    //    List<Comment> getAllCommentsByUser(Long id);
+    //    Comment getCommentById(Long id);
+    //    Comment createComment(Comment comment);
+    //    void deleteComment(Long id);
+    @Autowired
+    CommentService commentService;
+    @GetMapping(path = "/getAll")
+    public Response getAll(){
+        return new Response(true, "All comments", commentService.getAllComments());
+    }
+    @GetMapping(path = "/getByOrderId/{id}")
+    public Response getAllByOrderId(@PathVariable Long id){
+        return new Response(true, "All comments for Order with id = " + id, commentService.getAllCommentsByOrderId(id));
+    }
+    @GetMapping(path = "/getByUserId/{id}")
+    public Response getAllByUserId(@PathVariable Long id) {
+        return new Response(true, "All comments by User with id = " + id, commentService.getAllCommentsByUser(id));
+    }
+    @GetMapping(path = "/getById")
+    public Response getById(@PathVariable Long id){
+        return new Response(true, "Comment with id = " + id , commentService.getCommentById(id));
+    }
+    @PostMapping(path = "/create")
+    public Response create(@RequestBody Comment comment){
+        return new Response(true, "Comment created succesfully",commentService.createComment(comment));
+    }
+    @DeleteMapping(path = "/delete/{id}")
+    public Response deleteComment(@PathVariable Long id){
+        commentService.deleteComment(id);
+        return new Response(true, "Comment was deleted successfully!", null);
+    }
+}
