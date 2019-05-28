@@ -7,11 +7,12 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserRolesService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(path = "/admin/userRoles")
 public class UserRolesController {
@@ -25,10 +26,12 @@ public class UserRolesController {
     //    List<User> getUsersByRoles(String role);
     //    void deleteUserRoles(Integer id);
 
+    //tested
     @GetMapping(path = "/getAll")
     public Response getAllUserRoles(){
         return new Response (true,"All userRoles that were created!",userRolesService.getAllUserRoles());
     }
+    //tested
     @GetMapping(path = "/getAllByUserId/{id}")
     public Response getUserRolesByUser(@PathVariable Long id){
         User user;
@@ -39,26 +42,34 @@ public class UserRolesController {
             e.printStackTrace();
             return new Response(false,"Error: There is no such user with id = " + id,null );
         }
-        //Couldn't add new role. Error when searching for user that doesn't exist!!!!
         return new Response(true,"All roles that belong to user with id = " + id,userRolesService.getUserRolesByUser(user));
     }
+    //tested
     @GetMapping(path = "/getAllByRole/{role}")
     public Response getUsersByRole(@PathVariable String role){
-        return new Response (true,"All userRoles with role " + role,userRolesService.getUsersByRoles(role));
+        return new Response (true, "All userRoles with role " + role,userRolesService.getUsersByRoles(role));
     }
+    //tested
     @PostMapping(path = "/createForUser/{userId}")
     public Response create(@RequestBody UserRoles userRole, @PathVariable Long userId){
-
-        if(userService.getUserById(userId)!=null) {
+        User user = userService.getUserById(userId);
+        if(user!=null) {
+            userRole.setUser(user);
             return new Response(true, "new Role created for user with id = " + userId, userRolesService.createUserRole(userRole));
         }
         else
             return new Response(false, "Error: There's no such user",null);
-        //Couldn't add new role. Error when searching for user that doesn't exist!!!!
     }
+    //tested
     @DeleteMapping(path = "/delete/{id}")
     public Response deleteUserRole(@PathVariable Integer id){
-        userRolesService.deleteUserRoles(id);
-        return new Response(true,"UserRole with id = "+id+" has been successfully deleted",null);
+        try {
+            userRolesService.deleteUserRoles(id);
+            return new Response(true, "UserRole with id = " + id + " has been successfully deleted", null);
+        }
+        catch (EmptyResultDataAccessException exception){
+            exception.printStackTrace();
+            return new Response(false, "User not found!",exception.getMessage());
+        }
     }
 }

@@ -6,7 +6,7 @@ import com.example.demo.repository.CommentRepository;
 import com.example.demo.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(path = "/comment")
 public class CommentController {

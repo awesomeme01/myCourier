@@ -17,8 +17,8 @@ public class User{
     private String email;
     @Column(name = "phone_number", nullable = false, unique = true, length = 70)
     private int phoneNumber;
-    @JsonIgnore
-    @Column(name = "password", nullable = false)
+//    @JsonIgnore
+    @Column(name    = "password", nullable = false)
     private String password;
     @Column(name = "age", nullable = false)
     private int age;
@@ -149,4 +149,5 @@ public class User{
     public void setGender(Gender gender) {
         this.gender = gender;
     }
+
 }

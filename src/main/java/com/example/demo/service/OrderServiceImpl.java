@@ -31,6 +31,11 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
+    public OrderModel finishOrder(Long orderId, Courier courier) {
+        return null;
+    }
+
+    @Override
     public OrderModel takeOrder(Long orderId, Courier courier) {
 //        Order current = orderRepository.findById(orderId).get();
         OrderModel current = getOrderById(orderId);
