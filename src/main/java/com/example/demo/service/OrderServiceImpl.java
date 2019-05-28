@@ -1,15 +1,13 @@
 package com.example.demo.service;
 
 import com.example.demo.enums.Status;
-import com.example.demo.model.Courier;
-import com.example.demo.model.Item;
-import com.example.demo.model.Order;
-import com.example.demo.model.OrderModel;
+import com.example.demo.model.*;
 import com.example.demo.repository.ItemRepository;
 import com.example.demo.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,14 +18,16 @@ public class OrderServiceImpl implements OrderService{
     @Autowired
     ItemRepository itemRepository;
     @Override
-    public OrderModel createOrder(OrderModel order) {
-        for(Item item:order.getItemList()) {
-            item.setOrder(order.getOrder());
-            itemRepository.save(item);
-        }
-        order.getOrder().setStatus(Status.OPEN);
-        orderRepository.save(order.getOrder());
+    public Order createOrder(Order order) {
+        order.setStatus(Status.OPEN);
+        order.setTimeCreated(LocalDateTime.now());
+        orderRepository.save(order);
         return order;
+    }
+
+    @Override
+    public List<Item> addNewItemsToOrder(ItemWrapper itemWrapper, Long orderId) {
+        return null;
     }
 
     @Override

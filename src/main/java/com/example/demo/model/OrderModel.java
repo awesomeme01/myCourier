@@ -1,10 +1,14 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class OrderModel {
     private Order order;
     private List<Item> itemList;
+
+    public OrderModel(){}
 
     public OrderModel(Order order, List<Item> itemList) {
         this.order = order;

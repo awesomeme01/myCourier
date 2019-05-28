@@ -1,5 +1,8 @@
 package com.example.demo.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 
 @Entity
@@ -13,10 +16,18 @@ public class Item {
     private Double maxPrice;
     private Double minPrice;
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "order_id")
     private Order order;
 
     public Item() {
+    }
+
+    public Item(String name, String description, Double maxPrice, Double minPrice) {
+        this.name = name;
+        this.description = description;
+        this.maxPrice = maxPrice;
+        this.minPrice = minPrice;
     }
 
     public Long getId() {

@@ -32,6 +32,13 @@ public class Order {
 
     }
 
+    public Order(User orderedBy, Courier courier, Double moneyAmount, String market) {
+        this.orderedBy = orderedBy;
+        this.courier = courier;
+        this.moneyAmount = moneyAmount;
+        this.market = market;
+    }
+
     public Double getMoneyAmount() {
         return moneyAmount;
     }
