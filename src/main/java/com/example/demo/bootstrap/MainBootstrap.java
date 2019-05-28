@@ -61,8 +61,6 @@ public class MainBootstrap implements CommandLineRunner {
         itemList.add(new Item("Juice","1L",100.0,50.0));
         itemList.add(new Item("Burger","2pcs",300.0,150.0));
         //(User orderedBy, Courier courier, Double moneyAmount, String market)
-        orderService.createOrder(new OrderModel(
-                new Order(user1,null,900.0,"GLOBUS"),itemList
-        ));
+        orderService.createOrder(new Order(user1,null,900.0,"GLOBUS"));
     }
 }
