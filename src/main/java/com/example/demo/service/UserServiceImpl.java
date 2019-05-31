@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.model.User;
+import com.example.demo.model.UserRoles;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,8 +11,9 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
-    private UserRepository userRepository;
-
+    UserRepository userRepository;
+    @Autowired
+    UserRolesService userRolesService;
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -26,11 +28,15 @@ public class UserServiceImpl implements UserService {
     public User createUser(User user) {
         BCryptPasswordEncoder passwordEncoder = new  BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRolesService.createUserRole(new UserRoles("ROLE_USER",user));
         return userRepository.save(user);
     }
 
     @Override
     public void deleteUser(Long id) {
+        for (UserRoles userRoles :userRolesService.getUserRolesByUser(userRepository.findById(id).get())) {
+            userRolesService.deleteUserRoles(userRoles.getId());
+        }
         userRepository.deleteById(id);
     }
 }

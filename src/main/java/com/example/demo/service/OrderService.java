@@ -8,7 +8,7 @@ public interface OrderService {
     OrderModel takeOrder(Long orderId, Courier courier);
     OrderModel finishOrder(Long orderId, Courier courier);
     Order createOrder(Order order);
-    List<Item> addNewItemsToOrder(ItemWrapper itemWrapper, Long orderId);
+    OrderModel addNewItemsToOrder(ItemWrapper itemWrapper, Long orderId);
     List<OrderModel> getAllOrders();
 
     OrderModel getOrderById(Long id);

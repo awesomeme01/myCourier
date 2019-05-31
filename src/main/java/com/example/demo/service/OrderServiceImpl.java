@@ -26,8 +26,14 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public List<Item> addNewItemsToOrder(ItemWrapper itemWrapper, Long orderId) {
-        return null;
+    public OrderModel addNewItemsToOrder(ItemWrapper itemWrapper, Long orderId) {
+        Order order = orderRepository.findById(orderId).get();
+        for (Item item : itemWrapper.getItemList()
+             ) {
+            item.setOrder(order);
+            itemRepository.save(item);
+        }
+        return getOrderById(orderId);
     }
 
     @Override
@@ -67,11 +73,15 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public OrderModel getOrderById(Long id) {
-        return new OrderModel(
-                orderRepository.findById(id).get()
-                ,itemRepository.findAll().stream()
-                    .filter(x->x.getOrder().getId().equals(id))
+//        orderRepository;
+        if(orderRepository.findById(id).isPresent()) {
+            return new OrderModel(
+                    orderRepository.findById(id).get()
+                    , itemRepository.findAll().stream()
+                    .filter(x -> x.getOrder().getId().equals(id))
                     .collect(Collectors.toList()));
+        }
+        return null;
     }
 
     @Override

@@ -8,6 +8,10 @@ public class ItemWrapper {
     public ItemWrapper() {
     }
 
+    public ItemWrapper(List<Item> itemList) {
+        this.itemList = itemList;
+    }
+
     public List<Item> getItemList() {
         return itemList;
     }
