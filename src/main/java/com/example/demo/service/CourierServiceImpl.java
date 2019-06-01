@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 @Service
 public class CourierServiceImpl implements CourierService {
@@ -14,31 +15,26 @@ public class CourierServiceImpl implements CourierService {
     CourierRepository courierRepository;
     @Override
     public Courier createCourier(Courier courier) {
+        courier.setStatus(CourierStatus.ACTIVE);
+        courier.setRating(1000);
+        courier.setFeedbackCount(0);
         return courierRepository.save(courier);
     }
 
     @Override
-    public List<Courier> getCouriers(String status) {
-        if(status == null) {
-            return courierRepository.findAll();
+    public Courier updateCourierStatus(Long id, CourierStatus courierStatus) {
+        if(courierRepository.existsById(id)){
+            Courier courier = courierRepository.findById(id).get();
+            courier.setStatus(courierStatus);
+            courierRepository.save(courier);
+            return courier;
         }
-        //    ACTIVE,
-        //    VACATION,
-        //    BANNED;
-        else
-            return courierRepository.findAll().stream().filter(x->{
+        return null;
+    }
 
-              if (status.equals("ACTIVE") || status.equals("active")){
-                  return x.getStatus()== CourierStatus.ACTIVE;
-              }
-              else if(status.equals("VACATION")|| status.equals("vacation")){
-                  return x.getStatus()== CourierStatus.VACATION;
-              }
-              else if(status.equals("BANNED")|| status.equals("banned")){
-                  return x.getStatus()== CourierStatus.BANNED;
-              }
-              else{return false;}
-            }).collect(Collectors.toList());
+    @Override
+    public List<Courier> getCouriers(String status) {
+        return courierRepository.findAll().stream().filter(x->x.getStatus().name().equals(status.toUpperCase())).collect(Collectors.toList());
     }
 
     @Override

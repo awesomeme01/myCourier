@@ -5,6 +5,7 @@ import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.NoSuchElementException;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
+@Secured("ROLE_ADMIN")
 @RequestMapping("/admin/users")
 public class UserController {
     @Autowired
@@ -41,7 +43,7 @@ public class UserController {
 //        try{
 //
 //        }
-//        catch (PSQLException ex)
+//        catch (SQLException ex)
         return new Response(true,"User created successfully!",userService.createUser(user));
     }
     //tested

@@ -48,7 +48,7 @@ public class MainBootstrap implements CommandLineRunner {
         //String name, String description, Double maxPrice, Double minPrice
         courier.setUser(user2);
         courier.setFeedbackCount(0);
-        courier.setPin(121314);
+        courier.setPin((long)121314);
         courier.setStatus(CourierStatus.ACTIVE);
         courierRepository.save(courier);
 //        courier.set

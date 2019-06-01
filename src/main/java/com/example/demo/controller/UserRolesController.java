@@ -8,12 +8,14 @@ import com.example.demo.service.UserRolesService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
+@Secured("ROLE_ADMIN")
 @RequestMapping(path = "/admin/userRoles")
 public class UserRolesController {
     @Autowired

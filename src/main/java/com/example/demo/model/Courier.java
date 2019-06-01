@@ -16,16 +16,16 @@ public class Courier {
     private CourierStatus status;
     private int rating;
     private int feedbackCount;
-    private int pin;
+    private Long pin;
 
     public Courier() {
     }
 
-    public int getPin() {
+    public Long getPin() {
         return pin;
     }
 
-    public void setPin(int pin) {
+    public void setPin(Long pin) {
         this.pin = pin;
     }
 
