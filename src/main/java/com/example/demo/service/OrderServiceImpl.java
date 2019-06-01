@@ -37,8 +37,39 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public OrderModel finishOrder(Long orderId, Courier courier) {
-        return null;
+    public OrderModel finishOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId).get();
+        order.setStatus(Status.AWAITING_CONFIRMATION);
+        orderRepository.save(order);
+        return getOrderById(orderId);
+    }
+
+    @Override
+    public OrderModel declineOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId).get();
+        order.setSuccessful(false);
+        order.setStatus(Status.DECLINED);
+//        order.setCourier(null);
+        orderRepository.save(order);
+        return getOrderById(orderId);
+
+    }
+
+    @Override
+    public OrderModel cancelOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId).get();
+        order.setStatus(Status.CLOSED);
+        order.setSuccessful(false);
+        orderRepository.save(order);
+        return getOrderById(orderId);
+    }
+
+    @Override
+    public OrderModel confirmOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId).get();
+        order.setSuccessful(true);
+        order.setStatus(Status.COMPLETED);
+        return getOrderById(orderId);
     }
 
     @Override
