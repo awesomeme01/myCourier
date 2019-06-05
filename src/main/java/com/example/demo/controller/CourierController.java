@@ -48,10 +48,12 @@ public class CourierController {
         if(userRepository.existsById(userId)){
             courier.setUser(userRepository.findById(userId).get());
         }
+        else{
+            return new Response(false, "There is no user with id = " + userId, null);
+        }
         if(String.valueOf(courier.getPin()).length() == 14){
-            if(String.valueOf(courier.getId()).startsWith("2")||String.valueOf(courier.getId()).startsWith("1")){
-                return new Response(true, "Successfully create a new Courier", courierService.createCourier(courier));
-            }
+            return new Response(true, "Successfully create a new Courier", courierService.createCourier(courier));
+
         }
         return new Response(false, "Courier creation failed: invalid PIN", null);
     }

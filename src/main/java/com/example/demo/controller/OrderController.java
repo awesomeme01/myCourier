@@ -53,6 +53,16 @@ public class OrderController {
             return new Response(false, "Order with id = "+id+ " doesn't exist", exception.getMessage());
         }
     }
+    @Secured("ROLE_USER")
+    @GetMapping(path = "/getMyOrderHistory")
+    public Response getMyOrderHistory(Principal principal){
+        return null;
+    }
+    @Secured("ROLE_USER")
+    @GetMapping(path = "getMyOrderById/{id}")
+    public Response getMyOrderById(Principal principal, @PathVariable Long id){
+        return null;
+    }
     //tested - needs one more final test
     @Secured("ROLE_USER")
     @PostMapping(path = "/create")
@@ -61,6 +71,7 @@ public class OrderController {
         return new Response(true, "Order created successfully", orderService.createOrder(order));
     }
     //tested - needs one more final test
+    @Secured("ROLE_USER")
     @PutMapping(path = "/addItemToOrder/{orderId}")
     public Response addItemToOrder(Principal principal, @PathVariable Long orderId, @RequestBody ItemWrapper itemWrapper){
         if(!orderRepository.existsById(orderId)){
@@ -89,10 +100,11 @@ public class OrderController {
         return new Response(true, "Order taken by courier with username = " + principal.getName() , orderService.takeOrder(id, courierRepository.findByUsername(principal.getName())));
     }
     //tested
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @DeleteMapping(path = "/delete/{id}")
     public Response deleteOrder(Principal principal, @PathVariable Long id){
         if(!orderRepository.existsById(id)){
-            return new Response(false, "Such order doensn't exist", null);
+            return new Response(false, "Such order doesn't exist", null);
         }
         if(orderRepository.belongsTo(id,principal.getName()).equals(1)){
             orderService.deleteOrder(id);

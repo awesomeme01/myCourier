@@ -29,9 +29,9 @@ public class MainBootstrap implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         BCryptPasswordEncoder passwordEncoder = new  BCryptPasswordEncoder();
-        User admin = new User.Builder("admin").withPhoneNumber(550523209).withEmail("admin@gmail.com").withPassword(passwordEncoder.encode("123admin")).withAge(20).withGender(Gender.MALE).isActive(1).build();
-        User user1 = new User.Builder("user1").withPhoneNumber(770324353).withEmail("user@gmail.com").withPassword(passwordEncoder.encode("123user")).withGender(Gender.FEMALE).withAge(18).isActive(1).build();
-        User user2 = new User.Builder("user2").withPhoneNumber(770321314).withEmail("user2@gmail.com").withPassword(passwordEncoder.encode("123user2")).withGender(Gender.MALE).withAge(18).isActive(1).build();
+        User admin = new User.Builder("admin").withPhoneNumber((long)550523209).withEmail("admin@gmail.com").withPassword(passwordEncoder.encode("123admin")).withAge(20).withGender(Gender.MALE).isActive(1).build();
+        User user1 = new User.Builder("user1").withPhoneNumber((long)770324353).withEmail("user@gmail.com").withPassword(passwordEncoder.encode("123user")).withGender(Gender.FEMALE).withAge(18).isActive(1).build();
+        User user2 = new User.Builder("user2").withPhoneNumber((long)770321314).withEmail("user2@gmail.com").withPassword(passwordEncoder.encode("123user2")).withGender(Gender.MALE).withAge(18).isActive(1).build();
         userRepository.save(admin);
         userRepository.save(user1);
         userRepository.save(user2);

@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Comment;
 import com.example.demo.model.Response;
-import com.example.demo.repository.CommentRepository;
 import com.example.demo.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +29,7 @@ public class CommentController {
     }
     @PostMapping(path = "/create")
     public Response create(@RequestBody Comment comment){
-        return new Response(true, "Comment created succesfully",commentService.createComment(comment));
+        return new Response(true, "Comment created successfully",commentService.createComment(comment));
     }
     @DeleteMapping(path = "/delete/{id}")
     public Response deleteComment(@PathVariable Long id){

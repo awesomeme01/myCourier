@@ -1,0 +1,90 @@
+Documentation of the api of myCourier website
+
+Every url begins with "localhost:8080/"
+
+"/home"+
+GET	"/myUser" - returns information about user currently logged in.
+GET	"/myCourier" - returns information about courier currently logged in.
+
+@Secured("ROLE_ADMIN")
+"/admin/users"+
+GET	"/getAll" - returns information about all users in the repository.
+GET	"/getById/{id}" - (@PathVariable Long id) of any user will return information about that user.
+POST	"/create" - requires JSON file describing information about the new user, then save that user in the repository.
+{
+	"username": "alyaska228",
+	"email": "alyaska@gmail.com",
+	"phoneNumber": 123,
+	"password": "123alyaska",
+	"age": 13,
+	"gender": "MALE"
+}
+DELETE	"/delete/{id}" - (@PathVariable Long id) of any user will delete that user from the repository.
+
+@Secured("ROLE_ADMIN")
+"/admin/userRoles"+
+GET	"/getAll" - returns information about all user roles.
+GET	"/getAllByUserId/{id}" - (@PathVariable Long id) of any user will return information about the user roles registered for that user.
+GET	"/getAllByRole/{role}" - (@PathVariable String role) return all users with this role.
+POST	"/createForUser/{userId}" - (@PathVariable Long userId) of any user + JSON describing user role will save that role in the repostitory.
+{
+	"role":"ROLE_ADMIN"
+}
+DELETE	"/delete/{id}" - (@PathVariable Integer id) will delete user role.
+
+@Secured("ROLE_ADMIN")
+"/admin/courier"+
+GET	"/getAll" - returns information about all authorized couriers.
+GET	"/getAll/{status}" - (@PathVariable String status) returns all couriers with that status.
+GET	"/getById/{id}" - (@PathVariable Long id) returns information about that particular courier.
+POST	"/createForUser/{userId}" - (@PathVariable Long userId) requires JSON describing new Courier, creates new courier and saves in the repository.
+{
+	"pin": 23415153532532
+}
+PUT	"/updateStatus/{id}" - (@PathVariable Long id) requires JSON describing new status, and updates status.
+{
+	"status":"Banned"
+}
+DELETE	"/delete/{id}/ - (@PathVariable Long id) will delete courier.
+
+"/api/orders/+
+@Secured("ROLE_ADMIN")
+GET	"/getAll" - returns information about all orders of the currently logged in user.
+@Secured("ROLE_ADMIN")
+GET	"/getById/{id}" - (@PathVariable Long id) return information about the particular order.
+@Secured("ROLE_USER")
+GET	"/getMyOrderHistory" - returns order history of the currently logged in user.
+@Secured("ROLE_USER")
+GET	"/getMyOrderById/{id}" - (@PathVariable Long id) returns information about the particular order.
+@Secured("ROLE_USER")
+POST	"/create" - requires JSON describing order, creates new order in the repostitory.
+	{
+		"moneyAmount": 1000,
+		"market": "GLOBUS"
+	}
+@Secured("ROLE_USER")
+PUT	"/addItemToOrder/{orderId}" - requires JSON describing list of items, add those items to the order.
+	{
+		"itemList" : [
+			{
+				"name": "Milk",
+				"description": "1Litter",
+				"maxPrice": 100,
+			    "minPrice": 50
+
+				
+			},{...},{...}
+		]
+	}
+@Secured("ROLE_COURIER")
+PUT	"/takeOrder/{id}" - no JSON required, allows to take order for the currently logged in courier.
+@Secured("ROLE_USER")
+PUT	"/cancelOrder/{id}" - no JSON required, allows for the user to cancel order.
+@Secured("ROLE_COURIER")
+PUT	"/declineOrder/{id}" - no JSON required, allows for the courier to decline order.
+@Secured("ROLE_COURIER")
+PUT	"/finishOrder/{id}" - no JSON required, allows for the courier to finish order and wait for the confirmation.
+@Secured("ROLE_USER")
+PUT	"/confirmOrder/{id}" - no JSON required, allows for the user to confirm that the order is successful.
+@Secured("ROLE_USER","ROLE_ADMIN")
+DELETE	"/delete/{id}" - no JSON required, deletes if this order really belongs to the currently logged in user. If currently logged in user has ROLE_ADMIN it will delete anyway.
