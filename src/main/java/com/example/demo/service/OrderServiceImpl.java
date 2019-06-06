@@ -103,6 +103,11 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
+    public List<Order> getOpenOrders() {
+        return orderRepository.findAll().stream().filter(x->x.getStatus().equals(Status.OPEN)).collect(Collectors.toList());
+    }
+
+    @Override
     public OrderModel getOrderById(Long id) {
 //        orderRepository;
         if(orderRepository.findById(id).isPresent()) {

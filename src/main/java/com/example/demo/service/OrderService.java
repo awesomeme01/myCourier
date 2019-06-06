@@ -13,6 +13,7 @@ public interface OrderService {
     Order createOrder(Order order);
     OrderModel addNewItemsToOrder(ItemWrapper itemWrapper, Long orderId);
     List<OrderModel> getAllOrders();
+    List<Order> getOpenOrders();
     OrderModel getOrderById(Long id);
     void deleteOrder(Long id);
 }

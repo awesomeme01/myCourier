@@ -84,6 +84,11 @@ public class OrderController {
             return new Response(false, "Order with id = " + orderId + " doesn't belong to the current user", null);
         }
     }
+    @Secured("ROLE_COURIER")
+    @GetMapping(path = "/getOpenOrders")
+    public Response getOpenOrders(){
+        return new Response(true, "Orders that are open now", orderService.getOpenOrders());
+    }
     //tested - need's one more test
     @Secured("ROLE_COURIER")
     @PutMapping(path = "/takeOrder/{id}")
@@ -143,6 +148,9 @@ public class OrderController {
         if(orderRepository.existsById(id)){
             if(orderRepository.findById(id).get().getCourier().equals(courierRepository.findByUsername(principal.getName()))){
                 return new Response(true, "Order completed by Courier. Awaiting confirmation from User", orderService.finishOrder(id));
+            }
+            else if(orderRepository.findById(id).get() == null){
+                return new Response(false, "Error: This order has no active courier at the moment", null);
             }
             return new Response(false, "Error: This order is taken by another Courier", null);
         }

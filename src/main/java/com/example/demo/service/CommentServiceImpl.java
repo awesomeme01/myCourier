@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.model.Comment;
 import com.example.demo.model.Courier;
+import com.example.demo.model.User;
 import com.example.demo.repository.CommentRepository;
 import com.example.demo.repository.CourierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,21 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public List<Comment> getAllComments() {
         return commentRepository.findAll();
+    }
+
+    @Override
+    public Comment editComment(Comment comment) {
+        Comment newComment = commentRepository.findById(comment.getId()).get();
+        newComment.setCommentText(comment.getCommentText());
+        return commentRepository.save(newComment);
+    }
+
+    @Override
+    public List<Comment> getCommentHistory(User user) {
+//        if(user == null){
+//            return null;
+//        }
+        return commentRepository.findAll().stream().filter(x -> x.getCreatedBy().equals(user)).collect(Collectors.toList());
     }
 
     @Override
