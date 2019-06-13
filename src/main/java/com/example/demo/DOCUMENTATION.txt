@@ -88,3 +88,7 @@ PUT	"/finishOrder/{id}" - no JSON required, allows for the courier to finish ord
 PUT	"/confirmOrder/{id}" - no JSON required, allows for the user to confirm that the order is successful.
 @Secured("ROLE_USER","ROLE_ADMIN")
 DELETE	"/delete/{id}" - no JSON required, deletes if this order really belongs to the currently logged in user. If currently logged in user has ROLE_ADMIN it will delete anyway.
+
+"/admin/market+"
+@Secured("ROLE_ADMIN")
+

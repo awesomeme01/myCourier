@@ -26,15 +26,20 @@ public class Order {
     private Status status;
     private Boolean isSuccessful;
     private Double moneyAmount;
-    private String market;
-
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    private Market market;
+    //todo create market as a different entity
     public Order(){
-
     }
 
-    public Order(User orderedBy, Courier courier, Double moneyAmount, String market) {
+    public Order(User orderedBy, Courier courier, Double moneyAmount, Market market) {
         this.orderedBy = orderedBy;
         this.courier = courier;
+        this.moneyAmount = moneyAmount;
+        this.market = market;
+    }
+    public Order(Double moneyAmount, Market market){
         this.moneyAmount = moneyAmount;
         this.market = market;
     }
@@ -47,11 +52,11 @@ public class Order {
         this.moneyAmount = moneyAmount;
     }
 
-    public String getMarket() {
+    public Market getMarket() {
         return market;
     }
 
-    public void setMarket(String market) {
+    public void setMarket(Market market) {
         this.market = market;
     }
 
@@ -88,7 +93,7 @@ public class Order {
     }
 
     public LocalDateTime getTimeCreated() {
-        return timeCreated;
+           return timeCreated;
     }
 
     public void setTimeCreated(LocalDateTime timeCreated) {

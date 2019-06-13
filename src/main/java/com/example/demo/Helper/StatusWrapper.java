@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.demo.Helper;
 
 public class StatusWrapper {
     String status;

@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Response;
+import com.example.demo.Helper.Response;
 import com.example.demo.repository.CourierRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

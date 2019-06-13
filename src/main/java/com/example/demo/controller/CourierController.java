@@ -2,16 +2,14 @@ package com.example.demo.controller;
 
 import com.example.demo.enums.CourierStatus;
 import com.example.demo.model.Courier;
-import com.example.demo.model.Response;
-import com.example.demo.model.StatusWrapper;
+import com.example.demo.Helper.Response;
+import com.example.demo.Helper.StatusWrapper;
 import com.example.demo.repository.CourierRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.CourierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.NoSuchElementException;
 
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -25,16 +23,17 @@ public class CourierController {
     private UserRepository userRepository;
     @Autowired
     private CourierRepository courierRepository;
+
     @GetMapping(path = "/getAll")
     public Response getAll(){
-        return new Response(true,"All couriers", courierRepository.findAll());
+        return new Response(true,"All couriers",courierService.getAll());
     }
-    @GetMapping(path = "/getAll/{status}")
+    @GetMapping(path = "/getAllByStatus/{status}")
     public Response getByStatus(@PathVariable String status){
         //    ACTIVE,
         //    VACATION,
         //    BANNED;
-        return new Response(true, "All courier with status = " + status, courierService.getCouriers(status));
+        return new Response(true, "All courier with status = " + status, courierService.getCouriersByStatus(status));
     }
     @GetMapping(path = "/getById/{id}")
     public Response getCourierById(@PathVariable Long id){

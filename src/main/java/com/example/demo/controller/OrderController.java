@@ -1,9 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.Helper.ItemWrapper;
+import com.example.demo.Helper.OrderWrapper;
+import com.example.demo.Helper.Response;
 import com.example.demo.enums.CourierStatus;
 import com.example.demo.enums.Status;
 import com.example.demo.model.*;
 import com.example.demo.repository.CourierRepository;
+import com.example.demo.repository.MarketRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.OrderService;
@@ -32,6 +36,8 @@ public class OrderController {
     CourierRepository courierRepository;
     @Autowired
     UserService userService;
+    @Autowired
+    MarketRepository marketRepository;
     //-------------------------------
 
     //-------------------------------
@@ -45,28 +51,31 @@ public class OrderController {
     @Secured("ROLE_ADMIN")
     @GetMapping(path = "/getById/{id}")
     public Response getById(Principal principal, @PathVariable Long id){
-        try {
-            return new Response(true, "Order with id = " + id, orderService.getOrderById(id));
+
+        if(!orderRepository.existsById(id)) {
+            return new Response(false, "Order with id = " + id + " doesn't exist", null);
         }
-        catch (NoSuchElementException exception){
-            System.out.println(exception.getMessage());
-            return new Response(false, "Order with id = "+id+ " doesn't exist", exception.getMessage());
-        }
+        return new Response(true, "Order with id = " + id, orderService.getOrderById(id));
     }
     @Secured("ROLE_USER")
     @GetMapping(path = "/getMyOrderHistory")
     public Response getMyOrderHistory(Principal principal){
-        return null;
+        return new Response(true,"This is your order history",orderService.getOrderByUser(userRepository.findByUsername(principal.getName())));
     }
     @Secured("ROLE_USER")
     @GetMapping(path = "getMyOrderById/{id}")
     public Response getMyOrderById(Principal principal, @PathVariable Long id){
-        return null;
+        if(orderRepository.belongsTo(id,principal.getName())==1){
+            return new Response(true,"Order with id = " + id,orderService.getOrderById(id));
+        }
+        else
+            return new Response(false, "Order with id = " + id + " doesn't belong to the current user", null);
     }
     //tested - needs one more final test
     @Secured("ROLE_USER")
     @PostMapping(path = "/create")
-    public Response createOrder(Principal principal, @RequestBody Order order){
+    public Response createOrder(Principal principal, @RequestBody OrderWrapper orderWrapper){
+        Order order = new Order(orderWrapper.getMoneyAmount(),marketRepository.findByName(orderWrapper.getMarket()));
         order.setOrderedBy(userRepository.findByUsername(principal.getName()));
         return new Response(true, "Order created successfully", orderService.createOrder(order));
     }
@@ -96,6 +105,9 @@ public class OrderController {
         if(!orderRepository.existsById(id)){
             return new Response(false, "Such order doesn't exist",null);
         }
+        if(orderRepository.findById(id).get().getCourier() != null){
+            return new Response(false,"This order is taken by another user", null);
+        }
         if(courierRepository.findByUsername(principal.getName()).getStatus().equals(CourierStatus.BANNED)){
             return new Response(false, "Current courier has the status = BANNED, which doesn't allow to take any orders",null);
         }
@@ -105,7 +117,7 @@ public class OrderController {
         return new Response(true, "Order taken by courier with username = " + principal.getName() , orderService.takeOrder(id, courierRepository.findByUsername(principal.getName())));
     }
     //tested
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @Secured("ROLE_USER")
     @DeleteMapping(path = "/delete/{id}")
     public Response deleteOrder(Principal principal, @PathVariable Long id){
         if(!orderRepository.existsById(id)){
@@ -117,6 +129,17 @@ public class OrderController {
         }
         else{
             return new Response(false, "Order with id = " + id + " doesn't belong to current user", null);
+        }
+    }
+    @Secured("ROLE_ADMIN")
+    @DeleteMapping(path = "/forceDelete/{id}")
+    public Response forceDelete(@PathVariable Long id){
+        try{
+            orderService.deleteOrder(id);
+            return new Response(true, "Order with id = " + id + " was forceDeleted!", null);
+        }
+        catch (NoSuchElementException ex){
+            return new Response(false, "Order with id = " + id + " doesn't exist!!", null);
         }
     }
     @Secured("ROLE_USER")
@@ -152,7 +175,8 @@ public class OrderController {
             else if(orderRepository.findById(id).get() == null){
                 return new Response(false, "Error: This order has no active courier at the moment", null);
             }
-            return new Response(false, "Error: This order is taken by another Courier", null);
+            else
+                return new Response(false, "Error: This order is taken by another Courier", null);
         }
         return new Response(false, "There is no such Order with id = " + id, null);
     }

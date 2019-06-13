@@ -16,6 +16,7 @@ public class CommentServiceImpl implements CommentService{
 
     @Autowired
     CommentRepository commentRepository;
+    @Autowired
     CourierRepository courierRepository;
 
     @Override
@@ -27,6 +28,9 @@ public class CommentServiceImpl implements CommentService{
     public Comment editComment(Comment comment) {
         Comment newComment = commentRepository.findById(comment.getId()).get();
         newComment.setCommentText(comment.getCommentText());
+        if(comment.getFeedbackValue()!=0){
+            newComment.setFeedbackValue(comment.getFeedbackValue());
+        }
         return commentRepository.save(newComment);
     }
 
@@ -54,14 +58,14 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public Comment createComment(Comment comment) {
+    public synchronized Comment createComment(Comment comment) {
         if(comment.getFeedbackValue()!=0){
             if(comment.getFeedbackValue()>0){
                 Courier courier = comment.getOrder().getCourier();
-                int initial = comment.getOrder().getCourier().getRating();
+                int initial = courier.getRating();
                 int oneMore = comment.getFeedbackValue();
-
-                courier.setFeedbackCount(comment.getOrder().getCourier().getFeedbackCount()+1);
+                courier.setPrevRating(courier.getRating());
+                courier.setFeedbackCount(courier.getFeedbackCount()+1);
                 courier.setRating(initial+oneMore/courier.getFeedbackCount());
                 courierRepository.save(courier);
             }
@@ -70,13 +74,21 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public void deleteComment(Long id) {
+    public synchronized void deleteComment(Long id) {
         Comment comment = commentRepository.findById(id).get();
-        if(comment.getFeedbackValue()!=0){
+        if(comment.getOrder().getCourier().getFeedbackCount()==0){
+            commentRepository.deleteById(id);
+        }
+        else if(comment.getFeedbackValue()!=0){
             Courier courier = comment.getOrder().getCourier();
+//            courier.setFeedbackCount(courier.getFeedbackCount()-1);
+//            courier.setRating(courier.getRating()-comment.getFeedbackValue()/courier.getFeedbackCount());
+            int tempRating = courier.getRating();
+            courier.setRating(courier.getPrevRating());
+            courier.setPrevRating(tempRating);
             courier.setFeedbackCount(courier.getFeedbackCount()-1);
-            courier.setRating(courier.getRating()-comment.getFeedbackValue()/courier.getFeedbackCount());
             courierRepository.save(courier);
+            commentRepository.deleteById(id);
         }
     }
 }

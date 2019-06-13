@@ -1,7 +1,11 @@
 package com.example.demo.service;
 
+import com.example.demo.Helper.ItemWrapper;
+import com.example.demo.Helper.OrderModel;
+import com.example.demo.enums.CourierStatus;
 import com.example.demo.enums.Status;
 import com.example.demo.model.*;
+import com.example.demo.repository.CommentRepository;
 import com.example.demo.repository.ItemRepository;
 import com.example.demo.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,10 @@ public class OrderServiceImpl implements OrderService{
     OrderRepository orderRepository;
     @Autowired
     ItemRepository itemRepository;
+    @Autowired
+    CourierService courierService;
+    @Autowired
+    CommentRepository commentRepository;
     @Override
     public Order createOrder(Order order) {
         order.setStatus(Status.OPEN);
@@ -50,6 +58,7 @@ public class OrderServiceImpl implements OrderService{
         order.setSuccessful(false);
         order.setStatus(Status.DECLINED);
 //        order.setCourier(null);
+        order.setCourier(null);
         orderRepository.save(order);
         return getOrderById(orderId);
 
@@ -74,9 +83,14 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public OrderModel takeOrder(Long orderId, Courier courier) {
-//        Order current = orderRepository.findById(orderId).get();
         OrderModel current = getOrderById(orderId);
         if(current.getOrder().getCourier()==null){
+            if(courier.getStatus().equals(CourierStatus.BANNED)){
+                return null;
+            }
+            else if(courier.getStatus().equals(CourierStatus.VACATION)){
+                courierService.updateCourierStatus(courier,CourierStatus.ACTIVE);
+            }
             current.getOrder().setCourier(courier);
             current.getOrder().setStatus(Status.TAKEN);
             orderRepository.save(current.getOrder());
@@ -96,10 +110,16 @@ public class OrderServiceImpl implements OrderService{
                             .findAll()
                             .stream()
                             .filter(x->x.getOrder().getId().equals(order.getId()))
-                            .collect(Collectors.toList())
-            ));
+                            .collect(Collectors.toList()),
+                    commentRepository.getCommentsByOrder(order)
+                    ));
         }
         return orderModels;
+    }
+
+    @Override
+    public List<Order> getOrderByUser(User user) {
+        return orderRepository.findOrdersByOrderedBy(user);
     }
 
     @Override
@@ -115,7 +135,7 @@ public class OrderServiceImpl implements OrderService{
                     orderRepository.findById(id).get()
                     , itemRepository.findAll().stream()
                     .filter(x -> x.getOrder().getId().equals(id))
-                    .collect(Collectors.toList()));
+                    .collect(Collectors.toList()),commentRepository.getCommentsByOrder(orderRepository.findById(id).get()));
         }
         return null;
     }

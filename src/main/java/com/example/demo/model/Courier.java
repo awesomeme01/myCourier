@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import com.example.demo.enums.CourierStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
@@ -15,7 +16,10 @@ public class Courier {
     private User user;
     private CourierStatus status;
     private int rating;
+    @JsonIgnore
+    private int prevRating;
     private int feedbackCount;
+
     private Long pin;
 
     public Courier() {
@@ -31,6 +35,14 @@ public class Courier {
 
     public int getFeedbackCount() {
         return feedbackCount;
+    }
+
+    public int getPrevRating() {
+        return prevRating;
+    }
+
+    public void setPrevRating(int prevRating) {
+        this.prevRating = prevRating;
     }
 
     public void setFeedbackCount(int feedbackCount) {

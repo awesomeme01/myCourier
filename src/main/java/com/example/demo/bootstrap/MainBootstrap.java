@@ -1,13 +1,15 @@
 package com.example.demo.bootstrap;
 
+import com.example.demo.Helper.ItemWrapper;
 import com.example.demo.enums.CourierStatus;
 import com.example.demo.enums.Gender;
 import com.example.demo.model.*;
 import com.example.demo.repository.CourierRepository;
+import com.example.demo.repository.MarketRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.UserRolesRepository;
+import com.example.demo.service.CommentService;
 import com.example.demo.service.OrderService;
-import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,6 +28,10 @@ public class MainBootstrap implements CommandLineRunner {
     OrderService orderService;
     @Autowired
     CourierRepository courierRepository;
+    @Autowired
+    MarketRepository marketRepository;
+    @Autowired
+    CommentService commentService;
     @Override
     public void run(String... args) throws Exception {
         BCryptPasswordEncoder passwordEncoder = new  BCryptPasswordEncoder();
@@ -36,12 +42,14 @@ public class MainBootstrap implements CommandLineRunner {
         userRepository.save(user1);
         userRepository.save(user2);
 
+//        UserRoles userRole3 = new UserRoles("ROLE_COURIER",user1);
         UserRoles userRole1 = new UserRoles("ROLE_ADMIN",admin);
         UserRoles userRole2 = new UserRoles("ROLE_USER",user1);
-//        UserRoles userRole3 = new UserRoles("ROLE_COURIER",user1);
+        UserRoles userRole3 = new UserRoles("ROLE_USER",user2);
         UserRoles userRole4 = new UserRoles("ROLE_COURIER",user2);
         userRolesRepository.save(userRole1);
         userRolesRepository.save(userRole2);
+        userRolesRepository.save(userRole3);
         userRolesRepository.save(userRole4);
         Courier courier = new Courier();
 //        courier.setFeedbackCount();
@@ -61,8 +69,17 @@ public class MainBootstrap implements CommandLineRunner {
         itemList.add(new Item("Juice","1L",100.0,50.0));
         itemList.add(new Item("Burger","2pcs",300.0,150.0));
         //(User orderedBy, Courier courier, Double moneyAmount, String market)
-        Order order = new Order(user1,null,900.0,"GLOBUS");
+        Market market = new Market("GLOBUS");
+        marketRepository.save(market);
+        Order order = new Order(user1,courier,900.0,market);
+        Order order2 = new Order(user2,courier,1000.0,market);
+
+
         orderService.createOrder(order);
+        orderService.createOrder(order2);
         orderService.addNewItemsToOrder(new ItemWrapper(itemList),order.getId());
+        orderService.addNewItemsToOrder(new ItemWrapper(itemList),order2.getId());
+        //(String commentText, int feedbackValue, Order order, User createdBy)
+        commentService.createComment(new Comment("This is one comment excellent", 1600,order,user1));
     }
 }

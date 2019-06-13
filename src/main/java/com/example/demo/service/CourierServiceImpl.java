@@ -13,6 +13,12 @@ import java.util.stream.Collectors;
 public class CourierServiceImpl implements CourierService {
     @Autowired
     CourierRepository courierRepository;
+    public Courier updateCourierStatus(Courier courier, CourierStatus courierStatus){
+        courier.setStatus(courierStatus);
+        courierRepository.save(courier);
+        return courier;
+    }
+
     @Override
     public Courier createCourier(Courier courier) {
         courier.setStatus(CourierStatus.ACTIVE);
@@ -33,8 +39,24 @@ public class CourierServiceImpl implements CourierService {
     }
 
     @Override
-    public List<Courier> getCouriers(String status) {
-        return courierRepository.findAll().stream().filter(x->x.getStatus().name().equals(status.toUpperCase())).collect(Collectors.toList());
+    public List<Courier> getAll() {
+        return courierRepository.findAll();
+    }
+
+    @Override
+    public List<Courier> getCouriersByStatus(String status) {
+        if(status==null){
+            return null;
+        }
+        return courierRepository.findAll().stream().filter(x->{
+            if(x.getStatus()==null){
+                return false;
+            }
+            else if(x.getStatus().name().equals(status.toUpperCase())){
+                return true;
+            }
+            else return false;
+        }).collect(Collectors.toList());
     }
 
     @Override

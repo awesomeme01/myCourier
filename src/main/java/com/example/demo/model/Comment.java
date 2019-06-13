@@ -24,6 +24,13 @@ public class Comment{
 
     public Comment(){}
 
+    public Comment(String commentText, int feedbackValue, Order order, User createdBy) {
+        this.commentText = commentText;
+        this.feedbackValue = feedbackValue;
+        this.order = order;
+        this.createdBy = createdBy;
+    }
+
     public User getCreatedBy() {
         return createdBy;
     }

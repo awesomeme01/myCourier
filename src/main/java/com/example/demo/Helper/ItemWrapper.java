@@ -1,4 +1,6 @@
-package com.example.demo.model;
+package com.example.demo.Helper;
+
+import com.example.demo.model.Item;
 
 import java.util.List;
 
